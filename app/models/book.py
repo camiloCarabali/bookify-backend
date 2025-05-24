@@ -14,7 +14,7 @@ class Book(Base):
     uploaded_by = Column(Integer, ForeignKey("bookify_schema.users.id"))
 
     uploader = relationship("User", back_populates="books")
-    audiobook = relationship("AudioBook", back_populates="book", uselist=False)
+    audiobooks = relationship("Audiobook", back_populates="book")
 
 
 class AudioBook(Base):
