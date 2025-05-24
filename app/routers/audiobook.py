@@ -7,6 +7,8 @@ from app.models.book import Book
 from app.schemas.audiobook import AudiobookOut
 from app.dependencies.auth import get_current_user
 from app.models.user import User
+from fastapi.responses import FileResponse
+from typing import List
 
 router = APIRouter(prefix="/audiobooks", tags=["Audiobooks"])
 
@@ -40,3 +42,25 @@ def upload_audiobook(
     db.commit()
     db.refresh(audio)
     return audio
+
+
+@router.get("/", response_model=List[AudiobookOut])
+def list_audiobooks(db: Session = Depends(get_db)):
+    return db.query(Audiobook).all()
+
+
+@router.get("/{audiobook_id}", response_model=AudiobookOut)
+def get_audiobook(audiobook_id: int, db: Session = Depends(get_db)):
+    audio = db.query(Audiobook).filter(Audiobook.id == audiobook_id).first()
+    if not audio:
+        raise HTTPException(status_code=404, detail="Audiolibro no encontrado")
+    return audio
+
+
+@router.get("/{audiobook_id}/audio")
+def get_audiobook_file(audiobook_id: int, db: Session = Depends(get_db)):
+    audio = db.query(Audiobook).filter(Audiobook.id == audiobook_id).first()
+    if not audio or not os.path.exists(audio.file_path):
+        raise HTTPException(status_code=404, detail="Archivo de audio no encontrado")
+
+    return FileResponse(path=audio.file_path, media_type="audio/mpeg", filename=os.path.basename(audio.file_path))
