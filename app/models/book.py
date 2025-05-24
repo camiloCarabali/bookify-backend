@@ -15,6 +15,7 @@ class Book(Base):
 
     uploader = relationship("User", back_populates="books")
     audiobooks = relationship("Audiobook", back_populates="book")
+    favorites = relationship("Favorite", back_populates="user", cascade="all, delete")
 
 
 class AudioBook(Base):
