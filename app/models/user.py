@@ -15,3 +15,5 @@ class User(Base):
 
     role = relationship("Role", back_populates="users")
     books = relationship("Book", back_populates="uploader")
+    favorites = relationship("Favorite", back_populates="user", cascade="all, delete")
+
