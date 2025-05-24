@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/tts", tags=["Text-to-Speech"])
 
-TTS_DIR = "uploads/tts"
+TTS_DIR = os.path.join("app", "uploads", "tts")
 os.makedirs(TTS_DIR, exist_ok=True)
 
 

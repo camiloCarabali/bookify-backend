@@ -12,7 +12,7 @@ from typing import List
 
 router = APIRouter(prefix="/audiobooks", tags=["Audiobooks"])
 
-UPLOAD_DIR = "uploads/audio"
+UPLOAD_DIR = os.path.join("app", "uploads", "audio")
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
