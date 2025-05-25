@@ -4,8 +4,7 @@ from app.database import get_db
 from app.models.category import Category
 from app.models.book import Book
 from app.schemas.category import CategoryCreate, CategoryOut
-from app.dependencies.auth import get_current_user
-from app.models.user import User
+from app.dependencies.security import get_current_admin
 from typing import List
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
@@ -15,20 +14,21 @@ router = APIRouter(prefix="/categories", tags=["Categories"])
 def create_category(
         category: CategoryCreate,
         db: Session = Depends(get_db),
-        current_user: User = Depends(get_current_user)
+        _: dict = Depends(get_current_admin)
 ):
-    if current_user.role.name != "admin":
-        raise HTTPException(status_code=403, detail="Solo administradores pueden crear categorías")
+    try:
+        existing = db.query(Category).filter(Category.name == category.name).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="La categoría ya existe")
 
-    existing = db.query(Category).filter(Category.name == category.name).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="La categoría ya existe")
-
-    new_category = Category(name=category.name)
-    db.add(new_category)
-    db.commit()
-    db.refresh(new_category)
-    return new_category
+        new_category = Category(name=category.name)
+        db.add(new_category)
+        db.commit()
+        db.refresh(new_category)
+        return new_category
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al crear categoría: {str(e)}")
 
 
 @router.get("/", response_model=List[CategoryOut])
@@ -41,11 +41,8 @@ def assign_category_to_book(
         book_id: int,
         category_id: int,
         db: Session = Depends(get_db),
-        current_user: User = Depends(get_current_user)
+        _: dict = Depends(get_current_admin)
 ):
-    if current_user.role.name != "admin":
-        raise HTTPException(status_code=403, detail="Solo administradores pueden asignar categorías")
-
     book = db.query(Book).filter(Book.id == book_id).first()
     category = db.query(Category).filter(Category.id == category_id).first()
 

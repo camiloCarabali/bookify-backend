@@ -16,17 +16,6 @@ class Book(Base):
 
     uploader = relationship("User", back_populates="books")
     audiobooks = relationship("Audiobook", back_populates="book")
-    favorites = relationship("Favorite", back_populates="user", cascade="all, delete")
-    reviews = relationship("Review", back_populates="book", cascade="all, delete-orphan")
+    favorites = relationship("Favorite", back_populates="book")
+    reviews = relationship("Review", back_populates="book")
     categories = relationship("Category", secondary=book_category, back_populates="books")
-
-
-class AudioBook(Base):
-    __tablename__ = "audiobooks"
-    __table_args__ = {"schema": "bookify_schema"}
-
-    id = Column(Integer, primary_key=True, index=True)
-    audio_url = Column(String, nullable=False)
-    book_id = Column(Integer, ForeignKey("bookify_schema.books.id"))
-
-    book = relationship("Book", back_populates="audiobooks")

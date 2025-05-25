@@ -7,7 +7,7 @@ class User(Base):
     __tablename__ = "users"
     __table_args__ = {"schema": "bookify_schema"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True, nullable=False)
     username = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
@@ -17,5 +17,3 @@ class User(Base):
     books = relationship("Book", back_populates="uploader")
     favorites = relationship("Favorite", back_populates="user", cascade="all, delete")
     reviews = relationship("Review", back_populates="user", cascade="all, delete-orphan")
-
-
