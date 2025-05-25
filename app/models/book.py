@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
+from app.models.category import book_category
 
 
 class Book(Base):
@@ -17,6 +18,7 @@ class Book(Base):
     audiobooks = relationship("Audiobook", back_populates="book")
     favorites = relationship("Favorite", back_populates="user", cascade="all, delete")
     reviews = relationship("Review", back_populates="book", cascade="all, delete-orphan")
+    categories = relationship("Category", secondary=book_category, back_populates="books")
 
 
 class AudioBook(Base):
@@ -27,4 +29,4 @@ class AudioBook(Base):
     audio_url = Column(String, nullable=False)
     book_id = Column(Integer, ForeignKey("bookify_schema.books.id"))
 
-    book = relationship("Book", back_populates="audiobook")
+    book = relationship("Book", back_populates="audiobooks")
