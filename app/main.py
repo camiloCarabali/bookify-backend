@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
-from app.routers import user, auth, book, audiobook, favorite, tts
+from app.routers import user, auth, book, audiobook, favorite, tts, review
 
 app = FastAPI()
 
@@ -21,6 +21,7 @@ app.include_router(book.router)
 app.include_router(audiobook.router)
 app.include_router(favorite.router)
 app.include_router(tts.router)
+app.include_router(review.router)
 
 
 @app.get("/")

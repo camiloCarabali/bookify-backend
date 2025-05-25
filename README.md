@@ -31,29 +31,38 @@ bookify/
 │   │   ├── role.py
 │   │   ├── book.py
 │   │   ├── favorite.py
-│   │   └── audiobook.py
+│   │   ├── audiobook.py
+│   │   └── review.py
 │   ├── schemas/
 │   │   ├── __init__.py
 │   │   ├── user.py
 │   │   ├── role.py
 │   │   ├── book.py
+│   │   ├── favorite.py
 │   │   ├── audiobook.py
+│   │   ├── review.py
 │   │   └── auth.py
+│   │
 │   ├── routers/
 │   │   ├── __init__.py
 │   │   ├── user.py
 │   │   ├── role.py
 │   │   ├── book.py
+│   │   ├── favorite.py
+│   │   ├── tts.py
 │   │   ├── audiobook.py
+│   │   ├── review.py
 │   │   └── auth.py
 │   ├── utils/
 │   │   ├── __init__.py
 │   │   └── security.py
-│   └── dependencies/
-│       ├── __init__.py
-│       └── auth.py
-├── uploads/
-│   └── audio/
+│   ├── dependencies/
+│   │    ├── __init__.py
+│   │    └── auth.py
+│   │
+│   └──uploads/
+│       ├── audio/
+│       └── tts/
 ├── .env
 ├── requirements.txt
 └── README.md
