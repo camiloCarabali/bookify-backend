@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
+
 from app.database import Base
 
 book_category = Table(
@@ -15,7 +16,7 @@ class Category(Base):
     __tablename__ = "categories"
     __table_args__ = {"schema": "bookify_schema"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
     books = relationship("Book", secondary=book_category, back_populates="categories")

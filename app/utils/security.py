@@ -11,9 +11,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-if not SECRET_KEY:
-    raise ValueError("La variable de entorno SECRET_KEY no está definida")
-
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)

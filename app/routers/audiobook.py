@@ -6,11 +6,11 @@ from app.database import get_db
 from app.models.audiobook import Audiobook
 from app.models.book import Book
 from app.schemas.audiobook import AudiobookOut
-from app.dependencies.security import validate_audio_file
+from app.dependencies.security import validate_audio_file, get_current_admin
 
 router = APIRouter(prefix="/audiobooks", tags=["Audiobooks"])
 
-UPLOAD_DIR = os.path.abspath(os.path.join("app", "uploads", "audio"))
+UPLOAD_DIR = os.path.join("app", "uploads", "audio")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
@@ -19,6 +19,7 @@ def upload_audiobook(
         book_id: int = Form(...),
         file: UploadFile = Depends(validate_audio_file),
         db: Session = Depends(get_db),
+        _: dict = Depends(get_current_admin)
 ):
     book = db.query(Book).filter(Book.id == book_id).first()
     if not book:
@@ -26,7 +27,7 @@ def upload_audiobook(
 
     existing_audio = db.query(Audiobook).filter(Audiobook.book_id == book_id).first()
     if existing_audio:
-        raise HTTPException(status_code=400, detail="Este libro ya tiene un audiolibro asignado")
+        raise HTTPException(status_code=400, detail="Este libro ya tiene un audiolibro")
 
     filename = f"{book_id}_{file.filename}"
     file_path = os.path.join(UPLOAD_DIR, filename)
@@ -59,4 +60,5 @@ def get_audiobook_file(audiobook_id: int, db: Session = Depends(get_db)):
     audio = db.query(Audiobook).filter(Audiobook.id == audiobook_id).first()
     if not audio or not os.path.exists(audio.file_path):
         raise HTTPException(status_code=404, detail="Archivo de audio no encontrado")
+
     return FileResponse(path=audio.file_path, media_type="audio/mpeg", filename=os.path.basename(audio.file_path))

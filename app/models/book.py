@@ -8,7 +8,7 @@ class Book(Base):
     __tablename__ = "books"
     __table_args__ = {"schema": "bookify_schema"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
     author = Column(String, nullable=False)
     description = Column(Text, nullable=True)
