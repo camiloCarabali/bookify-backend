@@ -1,35 +1,33 @@
 import os
-from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
+from starlette.responses import FileResponse
 from app.database import get_db
 from app.models.audiobook import Audiobook
 from app.models.book import Book
 from app.schemas.audiobook import AudiobookOut
-from app.dependencies.auth import get_current_user
-from app.models.user import User
-from fastapi.responses import FileResponse
-from typing import List
+from app.dependencies.security import validate_audio_file, get_current_admin
 
 router = APIRouter(prefix="/audiobooks", tags=["Audiobooks"])
 
 UPLOAD_DIR = os.path.join("app", "uploads", "audio")
-
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/", response_model=AudiobookOut)
 def upload_audiobook(
         book_id: int = Form(...),
-        file: UploadFile = File(...),
+        file: UploadFile = Depends(validate_audio_file),
         db: Session = Depends(get_db),
-        current_user: User = Depends(get_current_user)
+        _: dict = Depends(get_current_admin)
 ):
-    if not current_user.role or current_user.role.name != "admin":
-        raise HTTPException(status_code=403, detail="Solo administradores pueden subir audiolibros")
-
     book = db.query(Book).filter(Book.id == book_id).first()
     if not book:
         raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    existing_audio = db.query(Audiobook).filter(Audiobook.book_id == book_id).first()
+    if existing_audio:
+        raise HTTPException(status_code=400, detail="Este libro ya tiene un audiolibro")
 
     filename = f"{book_id}_{file.filename}"
     file_path = os.path.join(UPLOAD_DIR, filename)
@@ -44,7 +42,7 @@ def upload_audiobook(
     return audio
 
 
-@router.get("/", response_model=List[AudiobookOut])
+@router.get("/", response_model=list[AudiobookOut])
 def list_audiobooks(db: Session = Depends(get_db)):
     return db.query(Audiobook).all()
 
