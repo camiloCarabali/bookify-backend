@@ -13,3 +13,4 @@ sqlalchemy-utils
 gTTS
 starlette
 requests
+email-validator
