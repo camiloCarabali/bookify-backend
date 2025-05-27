@@ -113,7 +113,7 @@ def get_review_stats(book_id: int, db: Session = Depends(get_db)):
 
     return {
         "book_id": book_id,
-        "titulo": book.titulo,
+        "titulo": book.title,
         "promedio_calificacion": round(avg_rating, 2) if avg_rating else 0,
         "total_reviews": total_reviews
     }
