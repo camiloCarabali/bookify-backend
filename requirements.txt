@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+alembic
+python-jose
+passlib
+bcrypt
+pydantic
+slowapi
+python-dotenv
+sqlalchemy-utils
+gTTS
+starlette
+requests

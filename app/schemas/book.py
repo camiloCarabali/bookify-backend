@@ -1,16 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
-
-
-class AudioBookBase(BaseModel):
-    audio_url: str
-
-
-class AudioBookOut(AudioBookBase):
-    id: int
-
-    class Config:
-        orm_mode = True
+from typing import Optional, List
+from app.schemas.category import CategoryOut
 
 
 class BookBase(BaseModel):
@@ -20,13 +10,23 @@ class BookBase(BaseModel):
 
 
 class BookCreate(BookBase):
-    audio_url: Optional[str] = None
+    category_ids: List[int] = []
 
 
 class BookOut(BookBase):
     id: int
     uploaded_by: Optional[int]
-    audiobook: Optional[AudioBookOut] = None
+    categories: List[CategoryOut] = []
+    audiobooks: Optional[List["AudiobookOut"]] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+
+class AudiobookOut(BaseModel):
+    id: int
+    file_path: str
+    book_id: int
+
+
+BookOut.model_rebuild()

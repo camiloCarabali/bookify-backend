@@ -1,9 +1,12 @@
 from pydantic import BaseModel
 
 
-class AudiobookOut(BaseModel):
+class FavoriteCreate(BaseModel):
+    book_id: int
+
+
+class FavoriteOut(BaseModel):
     id: int
-    file_path: str
     book_id: int
 
     class Config:
