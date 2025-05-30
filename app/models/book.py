@@ -12,6 +12,7 @@ class Book(Base):
     title = Column(String, nullable=False)
     author = Column(String, nullable=False)
     description = Column(Text, nullable=True)
+    image_url = Column(String, nullable=True)
     uploaded_by = Column(Integer, ForeignKey("bookify_schema.users.id"))
 
     uploader = relationship("User", back_populates="books")
