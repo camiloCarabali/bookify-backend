@@ -22,6 +22,7 @@ def create_book(
         title=book.title,
         author=book.author,
         description=book.description,
+        image_url=book.image_url,
         uploaded_by=current_user.id
     )
 
